@@ -7,7 +7,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsLayoutItem>
 
-#include <Plasma/Applet>
 #include <Plasma/Containment>
 #include <Plasma/Corona>
 #include <Plasma/Wallpaper>
@@ -32,6 +31,10 @@ private:
   QPushButton *browseButton;
   
   QDir currentDir;
+  
+  Plasma::Containment *d;
+  Plasma::Corona *corona;
+  int screen;
 };
 
 #endif
