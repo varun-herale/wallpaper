@@ -1,4 +1,7 @@
 #include <QtGui>
+#include <QDBus>
+
+#include <activity.h>
 
 #include "window.h"
 
@@ -48,7 +51,14 @@ void Window::okay()
   if(screen < 0)
     screen = 0;
   
-  d = corona->containmentForScreen(screen);
+  QDBusConnection bus = QDBusConnection::sessionBus();
+  QDBusInterface *interface = new QDBusInterface("org.kde.kactivitymanagerd",
+						 "/ActivityManager",
+						 "org.kde.ActivityManager");
+  Activity current = interface->call("CurrentActivity");
+  
+  d = containmentForScreen(0,1);
+  
   d->wallpaper()->setUrls(url);
   d->setWallpaper("image");
 }
