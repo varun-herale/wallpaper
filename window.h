@@ -33,8 +33,6 @@ private:
   QDir currentDir;
   
   Plasma::Containment *d;
-  Plasma::Corona *corona;
-  int screen;
 };
 
 #endif

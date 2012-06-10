@@ -45,12 +45,6 @@ void Window::okay()
   KUrl url;
   url.addpath(imagePath);
   
-  corona = Plasma::Applet::containment()->corona();
-  screen = Plasma::Applet::containment()->screen();
-  
-  if(screen < 0)
-    screen = 0;
-  
   QDBusConnection bus = QDBusConnection::sessionBus();
   QDBusInterface *interface = new QDBusInterface("org.kde.kactivitymanagerd",
 						 "/ActivityManager",
