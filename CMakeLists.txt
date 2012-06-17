@@ -1,15 +1,21 @@
 PROJECT(wallpaper)
 
 FIND_PACKAGE(KDE4 REQUIRED)
-
 INCLUDE(KDE4Defaults)
  
-include_directories( ${KDE4_INCLUDES} )
+ADD_DEFINITIONS(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+INCLUDE_DIRECTORIES(
+   ${CMAKE_SOURCE_DIR}
+   ${CMAKE_BINARY_DIR}
+   ${KDE4_INCLUDES}
+   )
  
-set( KDE4ProjectSources main.cpp window.cpp )
+SET(wallpaper_SRCS main.cpp window.cpp)
  
-kde4_add_executable( wallpaper ${KDE4ProjectSources} )
+KDE4_ADD_EXECUTABLE(wallpaper ${wallpaper_SRCS})
  
-target_link_libraries( wallpaper ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} )
- 
-install( TARGETS wallpaper  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+TARGET_LINK_LIBRARIES(wallpaper 
+		      ${KDE4_KDEUI_LIBS} ${KDE4_KPARTS_LIBS} ${KDE4_PLASMA_LIBS})
+
+INSTALL(TARGETS wallpaper
+	DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})

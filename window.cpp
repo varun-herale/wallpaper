@@ -1,7 +1,4 @@
 #include <QtGui>
-#include <QDBus>
-
-#include <activity.h>
 
 #include "window.h"
 
@@ -11,6 +8,8 @@ Window::Window(QWidget *parent) : QDialog(parent)
   okayButton = createButton(tr("&Okay"), SLOT(okay()));
   
   imageComboBox = createComboBox();
+  
+  d = new Plasma::Containment();
   
   imageLabel = new QLabel(tr("Image Path:"));
   
@@ -43,18 +42,42 @@ void Window::okay()
   QString imagePath = imageComboBox->currentText();
   
   KUrl url;
-  url.addpath(imagePath);
+  url.addPath(imagePath);
   
   QDBusConnection bus = QDBusConnection::sessionBus();
   QDBusInterface *interface = new QDBusInterface("org.kde.kactivitymanagerd",
 						 "/ActivityManager",
 						 "org.kde.ActivityManager");
-  Activity current = interface->call("CurrentActivity");
+  QDBusReply<QString> reply = interface->call("CurrentActivity");
   
-  d = containmentForScreen(0,1);
+  QString current = reply;
   
-  d->wallpaper()->setUrls(url);
-  d->setWallpaper("image");
+  /*KConfig config("plasma-desktop-appletsrc");
+  KConfigGroup cfg = config.group("Containments");
+  
+  foreach(const QString &name, cfg.groupList())
+  {
+    KConfigGroup contGrp(&cfg, name);
+    if(contGrp.readEntry("activityId") == current)
+    {
+      group = contGrp;
+    }
+  }
+  plugIn = Plasma::PluginLoader::pluginLoader();
+  app = plugIn->loadApplet("desktop");
+  d = qobject_cast<Plasma::Containment*>(const_cast<Plasma::Applet*>(app));*/
+  
+  qDebug() << (d->isContainment());
+  //Output is false for above. What to do ?
+  
+  //qDebug() << group.readEntry("activityId", QString());
+  
+  //d->restore(group);
+  
+  //d = containmentForScreen(0,1);
+  
+  //d->wallpaper()->setUrls(url);
+  //d->setWallpaper("image");
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)
