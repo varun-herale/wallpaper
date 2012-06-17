@@ -34,7 +34,7 @@ void Window::browse()
   QString path = QFileDialog::getOpenFileName(this,
 					      tr("Select Image"),
 					      "/home", 
-					      tr("Image Files (*.png *.jpeg *.jpg *.xcf *.svg *.svgz *.bmps)"));
+					      tr("Image Files (*.png *.jpeg *.jpg *.xcf *.svg *.svgz *.bmp)"));
   if(!path.isEmpty()) {
     if(imageComboBox->findText(path) == -1)
       imageComboBox->addItem(path);
@@ -45,6 +45,9 @@ void Window::browse()
 void Window::okay()
 {
   QString imagePath = imageComboBox->currentText();
+  
+  if(!QFile::exists(imagePath))
+    return;
   
   KUrl url;
   url.addPath(imagePath);
@@ -73,11 +76,10 @@ void Window::okay()
   qDebug() << (group.readPathEntry("wallpaper", QString()));
   
   wp->restore(group);
-  
-  qDebug() << wp->isInitialized();
   wp->setUrls(url);
-  update();
+  //wp->update(wp->boundingRect());
   wp->save(group);
+  //wp->configNeedSaving();
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)

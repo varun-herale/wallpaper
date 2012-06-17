@@ -7,9 +7,10 @@
 #include <QGraphicsLayoutItem>
 #include <QDBusInterface>
 #include <QDBusReply> 
+#include <QFile>
 
 #include <Plasma/Wallpaper>
-#include <Plasma/Containment>
+#include <Plasma/Applet>
 
 #include <kurl.h>
 #include <KConfig>
