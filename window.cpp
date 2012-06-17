@@ -9,7 +9,7 @@ Window::Window(QWidget *parent) : QDialog(parent)
   
   imageComboBox = createComboBox();
   
-  d = new Plasma::Containment();
+  wp = Plasma::Wallpaper::load("image");
   
   imageLabel = new QLabel(tr("Image Path:"));
   
@@ -22,6 +22,11 @@ Window::Window(QWidget *parent) : QDialog(parent)
   
   setWindowTitle(tr("Change Wallpaper"));
   resize(250,100);
+}
+
+Window::~Window()
+{
+  delete wp;
 }
 
 void Window::browse()
@@ -52,32 +57,27 @@ void Window::okay()
   
   QString current = reply;
   
-  /*KConfig config("plasma-desktop-appletsrc");
-  KConfigGroup cfg = config.group("Containments");
+  KConfig config("plasma-desktop-appletsrc");
+  cfg = config.group("Containments");
   
   foreach(const QString &name, cfg.groupList())
   {
     KConfigGroup contGrp(&cfg, name);
     if(contGrp.readEntry("activityId") == current)
-    {
-      group = contGrp;
-    }
+      grp = contGrp;
   }
-  plugIn = Plasma::PluginLoader::pluginLoader();
-  app = plugIn->loadApplet("desktop");
-  d = qobject_cast<Plasma::Containment*>(const_cast<Plasma::Applet*>(app));*/
   
-  qDebug() << (d->isContainment());
-  //Output is false for above. What to do ?
+  cfg = grp.group("Wallpaper");
+  group = KConfigGroup(&cfg, "image");
   
-  //qDebug() << group.readEntry("activityId", QString());
+  qDebug() << (group.readPathEntry("wallpaper", QString()));
   
-  //d->restore(group);
+  wp->restore(group);
   
-  //d = containmentForScreen(0,1);
-  
-  //d->wallpaper()->setUrls(url);
-  //d->setWallpaper("image");
+  qDebug() << wp->isInitialized();
+  wp->setUrls(url);
+  update();
+  wp->save(group);
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)

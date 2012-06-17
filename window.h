@@ -10,12 +10,10 @@
 
 #include <Plasma/Wallpaper>
 #include <Plasma/Containment>
-#include <Plasma/Applet>
 
 #include <kurl.h>
 #include <KConfig>
 #include <KConfigGroup>
-#include <KPluginInfo>
 
 class QComboBox;
 class QLabel;
@@ -27,6 +25,7 @@ class Window : public QDialog
   
 public:
   Window(QWidget *parent = 0);
+  ~Window();
   
 private slots:
   void browse();
@@ -40,10 +39,10 @@ private:
   QPushButton *createButton(const QString &text, const char *member);
   QComboBox *createComboBox(const QString &text = QString());
  
-  //Plasma::PluginLoader *plugIn;
   KConfigGroup group;
-  Plasma::Applet *app;
-  Plasma::Containment *d;
+  Plasma::Wallpaper *wp;
+  KConfigGroup cfg;
+  KConfigGroup grp;
 };
 
 #endif
