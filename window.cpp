@@ -6,13 +6,11 @@ Window::Window(QWidget *parent) : QDialog(parent)
 {
   browseButton = createButton(tr("&Browse..."), SLOT(browse()));
   okayButton = createButton(tr("&Okay"), SLOT(okay()));
-  
+
   imageComboBox = createComboBox();
-  
-  wp = Plasma::Wallpaper::load("image");
-  
+
   imageLabel = new QLabel(tr("Image Path:"));
-  
+
   QGridLayout *mainLayout = new QGridLayout;
   mainLayout->addWidget(imageLabel,0,0);
   mainLayout->addWidget(imageComboBox,0,1);
@@ -26,7 +24,6 @@ Window::Window(QWidget *parent) : QDialog(parent)
 
 Window::~Window()
 {
-  delete wp;
 }
 
 void Window::browse()
@@ -41,45 +38,20 @@ void Window::browse()
     imageComboBox->setCurrentIndex(imageComboBox->findText(path));
   }
 }
-  
+
 void Window::okay()
 {
   QString imagePath = imageComboBox->currentText();
-  
+
   if(!QFile::exists(imagePath))
     return;
+
+  QDBusInterface *interface = new QDBusInterface("org.kde.plasma-desktop",
+						 "/App",
+						 "local.PlasmaApp");
   
-  KUrl url;
-  url.addPath(imagePath);
-  
-  QDBusConnection bus = QDBusConnection::sessionBus();
-  QDBusInterface *interface = new QDBusInterface("org.kde.kactivitymanagerd",
-						 "/ActivityManager",
-						 "org.kde.ActivityManager");
-  QDBusReply<QString> reply = interface->call("CurrentActivity");
-  
-  QString current = reply;
-  
-  KConfig config("plasma-desktop-appletsrc");
-  cfg = config.group("Containments");
-  
-  foreach(const QString &name, cfg.groupList())
-  {
-    KConfigGroup contGrp(&cfg, name);
-    if(contGrp.readEntry("activityId") == current)
-      grp = contGrp;
-  }
-  
-  cfg = grp.group("Wallpaper");
-  group = KConfigGroup(&cfg, "image");
-  
-  qDebug() << (group.readPathEntry("wallpaper", QString()));
-  
-  wp->restore(group);
-  wp->setUrls(url);
-  //wp->update(wp->boundingRect());
-  wp->save(group);
-  //wp->configNeedSaving();
+  interface->call("setWallpaper", "image", "SingleImage", imagePath);
+  delete interface;
 }
 
 QPushButton *Window::createButton(const QString &text, const char *member)
@@ -97,23 +69,3 @@ QComboBox *Window::createComboBox(const QString &text)
   comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
   return comboBox;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-      

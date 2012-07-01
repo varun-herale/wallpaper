@@ -6,15 +6,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsLayoutItem>
 #include <QDBusInterface>
-#include <QDBusReply> 
-#include <QFile>
-
-#include <Plasma/Wallpaper>
-#include <Plasma/Applet>
-
-#include <kurl.h>
-#include <KConfig>
-#include <KConfigGroup>
 
 class QComboBox;
 class QLabel;
@@ -39,11 +30,6 @@ private:
   QPushButton *browseButton;
   QPushButton *createButton(const QString &text, const char *member);
   QComboBox *createComboBox(const QString &text = QString());
- 
-  KConfigGroup group;
-  Plasma::Wallpaper *wp;
-  KConfigGroup cfg;
-  KConfigGroup grp;
 };
 
 #endif
